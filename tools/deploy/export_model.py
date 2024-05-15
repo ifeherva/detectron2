@@ -24,10 +24,12 @@ from detectron2.structures import Boxes
 from detectron2.utils.env import TORCH_VERSION
 from detectron2.utils.file_io import PathManager
 from detectron2.utils.logger import setup_logger
+from densepose import add_densepose_config
 
 
 def setup_cfg(args):
     cfg = get_cfg()
+    add_densepose_config(cfg)
     # cuda context is initialized before creating dataloader, so we don't fork anymore
     cfg.DATALOADER.NUM_WORKERS = 0
     add_pointrend_config(cfg)

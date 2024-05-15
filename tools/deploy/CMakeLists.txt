@@ -12,4 +12,4 @@ target_link_libraries(
   torchscript_mask_rcnn
   -Wl,--no-as-needed TorchVision::TorchVision -Wl,--as-needed
   "${TORCH_LIBRARIES}" ${OpenCV_LIBS})
-set_property(TARGET torchscript_mask_rcnn PROPERTY CXX_STANDARD 14)
+set_property(TARGET torchscript_mask_rcnn PROPERTY CXX_STANDARD 17)
