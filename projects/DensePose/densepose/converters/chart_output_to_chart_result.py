@@ -40,7 +40,7 @@ def resample_uv_tensors_to_bbox(
     h = max(int(h), 1)
     u_bbox = F.interpolate(u, (h, w), mode="bilinear", align_corners=False)
     v_bbox = F.interpolate(v, (h, w), mode="bilinear", align_corners=False)
-    uv = torch.zeros([2, h, w], dtype=torch.float32, device=u.device)
+    uv = torch.zeros([2, h, w], dtype=u_bbox.dtype, device=u.device)
     for part_id in range(1, u_bbox.size(1)):
         uv[0][labels == part_id] = u_bbox[0, part_id][labels == part_id]
         uv[1][labels == part_id] = v_bbox[0, part_id][labels == part_id]
