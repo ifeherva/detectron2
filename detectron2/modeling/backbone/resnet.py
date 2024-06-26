@@ -386,7 +386,7 @@ class ResNet(Backbone):
         self._out_feature_strides = {"stem": current_stride}
         self._out_feature_channels = {"stem": self.stem.out_channels}
 
-        self.stage_names, self.stages = [], []
+        self.stage_names, self.stages = [], nn.ModuleList()
 
         if out_features is not None:
             # Avoid keeping unused layers in this module. They consume extra memory

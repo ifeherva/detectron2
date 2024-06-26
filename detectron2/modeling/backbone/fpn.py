@@ -96,8 +96,8 @@ class FPN(Backbone):
             output_convs.append(output_conv)
         # Place convs into top-down order (from low to high resolution)
         # to make the top-down computation in forward clearer.
-        self.lateral_convs = lateral_convs[::-1]
-        self.output_convs = output_convs[::-1]
+        self.lateral_convs = nn.ModuleList(lateral_convs[::-1])
+        self.output_convs = nn.ModuleList(output_convs[::-1])
         self.top_block = top_block
         self.in_features = tuple(in_features)
         self.bottom_up = bottom_up

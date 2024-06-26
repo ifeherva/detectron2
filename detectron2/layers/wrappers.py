@@ -114,12 +114,12 @@ class Conv2d(torch.nn.Conv2d):
 
         It assumes that norm layer is used before activation.
         """
-        norm = kwargs.pop("norm", None)
-        activation = kwargs.pop("activation", None)
+        norm = kwargs.pop("norm", torch.nn.Identity())
+        activation = kwargs.pop("activation", torch.nn.Identity())
         super().__init__(*args, **kwargs)
 
-        self.norm = norm
-        self.activation = activation
+        self.norm = norm or torch.nn.Identity()
+        self.activation = activation or torch.nn.Identity()
 
     def forward(self, x):
         # torchscript does not support SyncBatchNorm yet
@@ -142,10 +142,8 @@ class Conv2d(torch.nn.Conv2d):
         x = F.conv2d(
             x, self.weight, self.bias, self.stride, self.padding, self.dilation, self.groups
         )
-        if self.norm is not None:
-            x = self.norm(x)
-        if self.activation is not None:
-            x = self.activation(x)
+        x = self.norm(x)
+        x = self.activation(x)
         return x
 
 

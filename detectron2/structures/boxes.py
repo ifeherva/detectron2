@@ -127,6 +127,12 @@ class BoxMode(IntEnum):
             return arr
 
 
+def tensor_clamp(t, min_value, max_value):
+                r = torch.where(t < min_value, torch.full_like(t, min_value), t)
+                r = torch.where(t > max_value, max_value, t)
+                return r
+
+
 class Boxes:
     """
     This structure stores a list of boxes as a Nx4 torch.Tensor.
@@ -189,11 +195,18 @@ class Boxes:
             box_size (height, width): The clipping box's size.
         """
         assert torch.isfinite(self.tensor).all(), "Box tensor contains infinite or NaN!"
-        h, w = box_size
-        x1 = self.tensor[:, 0].clamp(min=0, max=w)
-        y1 = self.tensor[:, 1].clamp(min=0, max=h)
-        x2 = self.tensor[:, 2].clamp(min=0, max=w)
-        y2 = self.tensor[:, 3].clamp(min=0, max=h)
+
+        if isinstance(box_size, torch.Tensor):
+            x1 = tensor_clamp(self.tensor[:, 0], 0, box_size[1])
+            y1 = tensor_clamp(self.tensor[:, 1], 0, box_size[0])
+            x2 = tensor_clamp(self.tensor[:, 2], 0, box_size[1])
+            y2 = tensor_clamp(self.tensor[:, 3], 0, box_size[0])
+        else:
+            h, w = box_size
+            x1 = self.tensor[:, 0].clamp(min=0, max=w)
+            y1 = self.tensor[:, 1].clamp(min=0, max=h)
+            x2 = self.tensor[:, 2].clamp(min=0, max=w)
+            y2 = self.tensor[:, 3].clamp(min=0, max=h)
         self.tensor = torch.stack((x1, y1, x2, y2), dim=-1)
 
     def nonempty(self, threshold: float = 0.0) -> torch.Tensor:
