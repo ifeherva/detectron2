@@ -43,7 +43,7 @@ class FrozenBatchNorm2d(nn.Module):
         self.register_buffer("num_batches_tracked", None)
 
     def forward(self, x):
-        if x.requires_grad:
+        if x.requires_grad and not torch.jit.is_tracing():
             # When gradients are needed, F.batch_norm will use extra memory
             # because its backward op computes gradients for weight/bias as well.
             scale = self.weight * (self.running_var + self.eps).rsqrt()
